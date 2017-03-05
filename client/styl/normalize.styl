@@ -1,0 +1,211 @@
+// normalize.css @ f41ef9b
+// with additions from bootstrap, elemental-ui, and suitcss
+// and with subtractions that duplicate `base.styl`
+
+html
+  box-sizing border-box
+
+*
+*::before
+*::after
+  box-sizing inherit
+
+html
+  font-family sans-serif
+  -ms-overflow-style scrollbar
+  -webkit-tap-highlight-color rgba(0,0,0,0)
+  -ms-text-size-adjust 100%
+  -webkit-text-size-adjust 100%
+
+body
+  margin 0
+
+[tabindex="-1"]:focus
+  outline none !important
+
+// suppress 300ms touch delay that is present even with
+// viewport meta set in some browsers (mostly IE)
+// credit: bootstrap 4
+a
+area
+button
+[role="button"]
+input
+label
+select
+summary
+textarea
+  touch-action manipulation
+
+article
+aside
+details
+figcaption
+figure
+footer
+header
+main
+menu
+nav
+section
+summary
+  display block
+
+audio
+canvas
+progress
+video
+  display inline-block
+  vertical-align baseline
+
+audio:not([controls])
+  display none
+  height 0
+
+[hidden]
+template
+  display none
+
+a
+  background-color transparent
+  &:active
+  &:hover
+    outline 0
+
+abbr[title]
+  border-bottom 1px solid #888
+  cursor help
+  text-decoration underline
+  text-decoration underline dotted
+
+address
+  font-style normal
+  line-height inherit
+
+b
+strong
+  font-weight bolder
+
+dfn
+  font-style italic
+
+mark
+  background-color #ff0
+  color #000
+
+small
+  font-size 80%
+
+sub
+sup
+  font-size 75%
+  line-height 0
+  position relative
+  vertical-align baseline
+
+sup
+  top -0.5em
+
+sub
+  bottom -0.25em
+
+img
+  border 0
+
+svg:not(:root)
+  overflow hidden
+
+hr
+  box-sizing content-box
+  height 0
+  overflow visible
+
+pre
+  overflow auto
+
+code
+kbd
+pre
+samp
+  font-family monospace, monospace
+  font-size 1em
+
+button
+input
+optgroup
+select
+textarea
+  border-radius 0
+  font-family inherit
+  font-size inherit
+  line-height inherit
+  margin 0
+
+textarea
+  resize vertical
+
+button
+  overflow visible
+
+button
+select
+  text-transform none
+
+button
+html input[type="button"]
+input[type="reset"]
+input[type="submit"]
+  -webkit-appearance button
+  cursor pointer
+
+[role="button"]
+  cursor pointer
+
+button[disabled]
+html input[disabled]
+  cursor default
+
+button::-moz-focus-inner
+input::-moz-focus-inner
+  border 0
+  padding 0
+
+button:-moz-focusring
+input:-moz-focusring
+  outline 1px dotted ButtonText
+
+input
+  line-height normal
+
+input[type="checkbox"]
+input[type="radio"]
+  box-sizing border-box
+  padding 0
+
+input[type="number"]::-webkit-inner-spin-button
+input[type="number"]::-webkit-outer-spin-button
+  height auto
+
+input[type="search"]
+  -webkit-appearance none
+
+input[type="search"]::-webkit-search-cancel-button
+input[type="search"]::-webkit-search-decoration
+  -webkit-appearance none
+
+fieldset
+  border 0
+  margin 0
+  min-width 0
+  padding 0
+
+legend
+  border 0
+  line-height inherit
+  padding 0
+
+textarea
+  overflow auto
+
+optgroup
+  font-weight bold

@@ -1,0 +1,20 @@
+-cp client/src
+-cp data/assets
+-js debug/client.js
+-main Client
+
+-dce full
+
+-lib thx.core
+-lib thx.format
+-lib thx.http
+-lib thx.promise
+-lib thx.schema
+-lib thx.stream
+
+-lib markdown
+
+-lib dots
+-lib doom
+-lib tiki-tk
+-lib yaml

@@ -1,0 +1,24 @@
+{
+  "name": "dicefont.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "debug/index.js",
+  "bin": {
+    "client": "debug/client.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stylus-watch": "stylus -w client/styl/index.styl -o debug",
+    "stylus": "stylus client/styl/index.styl -o debug",
+    "closure": "closure-compiler --js_output_file deploy/client.js debug/client.js",
+    "minifycss": "minify --output deploy/index.css debug/index.css",
+    "minifyhtml": "html-minifier --output deploy/index.html debug/index.html",
+    "haxe": "haxe client.hxml",
+    "assets": "cp -r debug/assets deploy",
+    "syncs3": "aws s3 sync deploy s3://dicefont.com --profile personal",
+    "build": "npm run haxe && npm run stylus && npm run closure && npm run minifycss && npm run minifyhtml && npm run assets",
+    "deploy": "npm run build && npm run syncs3"
+  },
+  "author": "Franco Ponticelli",
+  "license": "ISC"
+}
