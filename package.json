@@ -14,9 +14,11 @@
     "minifycss": "minify --output deploy/index.css debug/index.css",
     "minifyhtml": "html-minifier --output deploy/index.html debug/index.html",
     "haxe": "haxe client.hxml",
-    "assets": "cp -r debug/assets deploy",
+    "assets": "cp -r debug/assets deploy && cp debug/config.json deploy/config.json",
     "syncs3": "aws s3 sync deploy s3://dicefont.com --profile personal",
-    "build": "npm run haxe && npm run stylus && npm run closure && npm run minifycss && npm run minifyhtml && npm run assets",
+    "createconfig": "echo \"\\\"https://cdn.rawgit.com/fponticelli/dicefont/$(git ls-remote git@github.com:fponticelli/dicefont.git | head -1 | cut -f 1 | cut -c1-8)/dist/\\\"\" > debug/config.json",
+
+    "build": "npm run haxe && npm run stylus && npm run closure && npm run minifycss && npm run minifyhtml && npm run createconfig && npm run assets",
     "deploy": "npm run build && npm run syncs3"
   },
   "author": "Franco Ponticelli",
