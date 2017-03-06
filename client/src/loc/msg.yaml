@@ -1,8 +1,8 @@
 header_title: DiceFont
 error_page_not_found: Page Not Found
 error_generic: Server Error
-tab_title_loading: Loading ...
+tab_title_loading: "Loading ..."
 tab_home_title_page: DiceFont
 tab_title_page: "{0} - DiceFont"
-tab_title_page_not_found: Page Not Found - DiceFont
-tab_title_generic_error: System Error - DiceFont
+tab_title_page_not_found: "Page Not Found - DiceFont"
+tab_title_generic_error: "System Error - DiceFont"

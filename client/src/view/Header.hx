@@ -4,6 +4,7 @@ import doom.html.Html.*;
 import Loc.msg;
 import haxe.ds.Option;
 import api.*;
+using thx.Arrays;
 
 class Header {
   public static function render(contents: SiteContents, page: Option<Page>) {
@@ -34,6 +35,8 @@ class Header {
           case _:
             li(renderLink(page));
         }
+      }).interspersef(function() {
+        return li(["class" => "active"], "•");
       })
     );
   }
