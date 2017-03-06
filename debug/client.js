@@ -675,9 +675,16 @@ Type["typeof"] = function(v) {
 		return ValueType.TUnknown;
 	}
 };
+var api_Face = { __ename__ : ["api","Face"], __constructs__ : ["Number","Empty"] };
+api_Face.Number = function(value) { var $x = ["Number",0,value]; $x.__enum__ = api_Face; $x.toString = $estr; return $x; };
+api_Face.Empty = ["Empty",1];
+api_Face.Empty.toString = $estr;
+api_Face.Empty.__enum__ = api_Face;
 var api_Glyph = function(name,code) {
 	this.name = name;
 	this.code = code;
+	var num = name.split("-").pop();
+	this.face = api_Glyph.numberPattern.match(num) ? api_Face.Number(Std.parseInt(num)) : api_Face.Empty;
 };
 api_Glyph.__name__ = ["api","Glyph"];
 api_Glyph.schema = function() {
@@ -695,6 +702,54 @@ api_Glyph.builder = function() {
 };
 api_Glyph.prototype = {
 	__class__: api_Glyph
+};
+var api_Glyphs = function() { };
+api_Glyphs.__name__ = ["api","Glyphs"];
+api_Glyphs.sortf = function(a,b) {
+	var _g = b.face;
+	var _g1 = a.face;
+	switch(_g1[1]) {
+	case 0:
+		switch(_g[1]) {
+		case 0:
+			var a1 = _g1[2];
+			var b1 = _g[2];
+			return thx_Ints.compare(a1,b1);
+		case 1:
+			return 1;
+		}
+		break;
+	case 1:
+		switch(_g[1]) {
+		case 0:
+			return -1;
+		case 1:
+			return 0;
+		}
+		break;
+	}
+};
+api_Glyphs.group = function(glyphs) {
+	return api_Glyphs.groups.map(function(group) {
+		var f = function(g) {
+			if(g.name != "df-" + group.prefix) {
+				return StringTools.startsWith(g.name,"df-" + group.prefix + "-");
+			} else {
+				return true;
+			}
+		};
+		var g1 = thx_Arrays.order(glyphs.filter(f),api_Glyphs.sortf);
+		return new api_Group(group.name,group.size,g1);
+	});
+};
+var api_Group = function(title,size,glyphs) {
+	this.title = title;
+	this.size = size;
+	this.glyphs = glyphs;
+};
+api_Group.__name__ = ["api","Group"];
+api_Group.prototype = {
+	__class__: api_Group
 };
 var api_Page = function(name,filename,content) {
 	this.name = name;
@@ -820,6 +875,7 @@ var api_SiteContents = function(version,pages,glyphs) {
 	});
 	this.pages = pages;
 	this.glyphs = glyphs;
+	this.groups = api_Glyphs.group(glyphs);
 };
 api_SiteContents.__name__ = ["api","SiteContents"];
 api_SiteContents.schema = function() {
@@ -3535,6 +3591,11 @@ thx_Arrays.findOption = function(array,predicate) {
 	}
 	return haxe_ds_Option.None;
 };
+thx_Arrays.order = function(array,sort) {
+	var n = array.slice();
+	n.sort(sort);
+	return n;
+};
 thx_Arrays.reduce = function(array,f,initial) {
 	var _g = 0;
 	while(_g < array.length) {
@@ -3724,6 +3785,9 @@ var thx_Ints = function() { };
 thx_Ints.__name__ = ["thx","Ints"];
 thx_Ints.canParse = function(s) {
 	return thx_Ints.pattern_parse.match(s);
+};
+thx_Ints.compare = function(a,b) {
+	return a - b;
 };
 thx_Ints.parse = function(s,base) {
 	if(null == base) {
@@ -5570,9 +5634,9 @@ view_App.render = function(state) {
 	} else {
 		_g3.h["class"] = value;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.main,state.contents.glyphs)]))]));
+	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.main,state.contents.groups)]))]));
 };
-view_App.renderMain = function(main,glyphs) {
+view_App.renderMain = function(main,groups) {
 	switch(main[1]) {
 	case 0:
 		var _g = new haxe_ds_StringMap();
@@ -5585,7 +5649,7 @@ view_App.renderMain = function(main,glyphs) {
 		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("...",null,null)]));
 	case 1:
 		var data = main[2];
-		return view_PageView.render(data,glyphs);
+		return view_PageView.render(data,groups);
 	case 2:
 		switch(main[2][1]) {
 		case 0:
@@ -5599,15 +5663,44 @@ view_App.renderMain = function(main,glyphs) {
 };
 var view_GlyphView = function() { };
 view_GlyphView.__name__ = ["view","GlyphView"];
-view_GlyphView.render = function(g) {
+view_GlyphView.render = function(g,size) {
 	var _g = new haxe_ds_StringMap();
-	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString(g.name);
+	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("symbol");
 	if(__map_reserved["class"] != null) {
 		_g.setReserved("class",value);
 	} else {
 		_g.h["class"] = value;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("i",_g,null);
+	var _g1 = new haxe_ds_StringMap();
+	var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("top");
+	if(__map_reserved["class"] != null) {
+		_g1.setReserved("class",value1);
+	} else {
+		_g1.h["class"] = value1;
+	}
+	var _g2 = new haxe_ds_StringMap();
+	var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("icon s" + size);
+	if(__map_reserved["class"] != null) {
+		_g2.setReserved("class",value2);
+	} else {
+		_g2.h["class"] = value2;
+	}
+	var _g3 = new haxe_ds_StringMap();
+	var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("" + g.name);
+	if(__map_reserved["class"] != null) {
+		_g3.setReserved("class",value3);
+	} else {
+		_g3.h["class"] = value3;
+	}
+	var children = doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("i",_g3,null)]))]));
+	var _g4 = new haxe_ds_StringMap();
+	var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("bottom");
+	if(__map_reserved["class"] != null) {
+		_g4.setReserved("class",value4);
+	} else {
+		_g4.h["class"] = value4;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([children,doom_core__$VNode_VNode_$Impl_$.el("div",_g4,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(g.name,null,null)]))]));
 };
 var view_Header = function() { };
 view_Header.__name__ = ["view","Header"];
@@ -5627,28 +5720,57 @@ view_Header.render = function(contents,page) {
 		_g1.h["class"] = value1;
 	}
 	var _g2 = new haxe_ds_StringMap();
-	var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("center title");
+	var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("center");
 	if(__map_reserved["class"] != null) {
 		_g2.setReserved("class",value2);
 	} else {
 		_g2.h["class"] = value2;
 	}
 	var _g3 = new haxe_ds_StringMap();
-	var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("#/");
-	if(__map_reserved["href"] != null) {
-		_g3.setReserved("href",value3);
-	} else {
-		_g3.h["href"] = value3;
-	}
-	var children = doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("a",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(Loc.msg.header_title,null,null)]))]));
-	var _g4 = new haxe_ds_StringMap();
-	var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("center links");
+	var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("logo");
 	if(__map_reserved["class"] != null) {
-		_g4.setReserved("class",value4);
+		_g3.setReserved("class",value3);
 	} else {
-		_g4.h["class"] = value4;
+		_g3.h["class"] = value3;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([children,doom_core__$VNode_VNode_$Impl_$.el("div",_g4,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderPages(contents.pages,page)]))]))]));
+	var _g4 = new haxe_ds_StringMap();
+	var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("#/");
+	if(__map_reserved["href"] != null) {
+		_g4.setReserved("href",value4);
+	} else {
+		_g4.h["href"] = value4;
+	}
+	var _g5 = new haxe_ds_StringMap();
+	var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("df-d20-20");
+	if(__map_reserved["class"] != null) {
+		_g5.setReserved("class",value5);
+	} else {
+		_g5.h["class"] = value5;
+	}
+	var children = doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("a",_g4,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("i",_g5,null)]))]));
+	var _g6 = new haxe_ds_StringMap();
+	var value6 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("title");
+	if(__map_reserved["class"] != null) {
+		_g6.setReserved("class",value6);
+	} else {
+		_g6.h["class"] = value6;
+	}
+	var _g7 = new haxe_ds_StringMap();
+	var value7 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("#/");
+	if(__map_reserved["href"] != null) {
+		_g7.setReserved("href",value7);
+	} else {
+		_g7.h["href"] = value7;
+	}
+	var children1 = doom_core__$VNode_VNode_$Impl_$.el("div",_g6,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("a",_g7,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(Loc.msg.header_title,null,null)]))]));
+	var _g8 = new haxe_ds_StringMap();
+	var value8 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("links");
+	if(__map_reserved["class"] != null) {
+		_g8.setReserved("class",value8);
+	} else {
+		_g8.h["class"] = value8;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([children,children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderPages(contents.pages,page)]))]))]))]));
 };
 view_Header.renderPages = function(list,current) {
 	var _g = new haxe_ds_StringMap();
@@ -5662,12 +5784,12 @@ view_Header.renderPages = function(list,current) {
 		if(current[1] == 0) {
 			var current1 = current[2];
 			if(current1.name == page.name) {
-				return view_Header.renderCurrent(page);
+				return doom_core__$VNode_VNode_$Impl_$.el("li",null,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderCurrent(page)]));
 			} else {
-				return view_Header.renderLink(page);
+				return doom_core__$VNode_VNode_$Impl_$.el("li",null,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderLink(page)]));
 			}
 		} else {
-			return view_Header.renderLink(page);
+			return doom_core__$VNode_VNode_$Impl_$.el("li",null,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderLink(page)]));
 		}
 	})));
 };
@@ -5682,14 +5804,21 @@ view_Header.renderLink = function(page) {
 	return doom_core__$VNode_VNode_$Impl_$.el("a",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(page.name,null,null)]));
 };
 view_Header.renderCurrent = function(page) {
-	return doom_core__$VNode_VNode_$Impl_$.el("span",null,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(page.name,null,null)]));
+	var _g = new haxe_ds_StringMap();
+	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("active");
+	if(__map_reserved["class"] != null) {
+		_g.setReserved("class",value);
+	} else {
+		_g.h["class"] = value;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("span",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(page.name,null,null)]));
 };
 var view_PageView = function() { };
 view_PageView.__name__ = ["view","PageView"];
-view_PageView.render = function(page,glyphs) {
+view_PageView.render = function(page,groups) {
 	var contents = [doom_core_VNodeImpl.Raw(Markdown.markdownToHtml(page.content),null,null)];
 	if(page.name == "home") {
-		contents.push(view_PageView.renderGlyphs(glyphs));
+		contents.push(view_PageView.renderGroups(groups));
 	}
 	var _g = new haxe_ds_StringMap();
 	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("site-page");
@@ -5707,7 +5836,34 @@ view_PageView.render = function(page,glyphs) {
 	}
 	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children(contents))]));
 };
-view_PageView.renderGlyphs = function(glyphs) {
+view_PageView.renderGroups = function(groups) {
+	var _g = new haxe_ds_StringMap();
+	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("groups");
+	if(__map_reserved["class"] != null) {
+		_g.setReserved("class",value);
+	} else {
+		_g.h["class"] = value;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children(groups.map(function(g) {
+		var _g1 = new haxe_ds_StringMap();
+		var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("glyph");
+		if(__map_reserved["class"] != null) {
+			_g1.setReserved("class",value1);
+		} else {
+			_g1.h["class"] = value1;
+		}
+		var children = doom_core__$VNode_VNode_$Impl_$.el("h2",null,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text(g.title,null,null)]));
+		var _g2 = new haxe_ds_StringMap();
+		var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("notes");
+		if(__map_reserved["class"] != null) {
+			_g2.setReserved("class",value2);
+		} else {
+			_g2.h["class"] = value2;
+		}
+		return doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([children,doom_core__$VNode_VNode_$Impl_$.el("h3",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("ideal size " + g.size + "px",null,null)])),view_PageView.renderGlyphs(g.glyphs,g.size)]));
+	})));
+};
+view_PageView.renderGlyphs = function(glyphs,size) {
 	var _g = new haxe_ds_StringMap();
 	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("glyphs");
 	if(__map_reserved["class"] != null) {
@@ -5723,7 +5879,7 @@ view_PageView.renderGlyphs = function(glyphs) {
 		} else {
 			_g1.h["class"] = value1;
 		}
-		return doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([view_GlyphView.render(g)]));
+		return doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([view_GlyphView.render(g,size)]));
 	})));
 };
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
@@ -5747,6 +5903,8 @@ if(ArrayBuffer.prototype.slice == null) {
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 Loc.msg = { tab_home_title_page : "DiceFont", tab_title_loading : "Loading ...", tab_title_page_not_found : "Page Not Found - DiceFont", error_page_not_found : "Page Not Found", tab_title_page : "{0} - DiceFont", header_title : "DiceFont", error_generic : "Server Error", tab_title_generic_error : "System Error - DiceFont"};
+api_Glyph.numberPattern = new EReg("^\\d+$","");
+api_Glyphs.groups = [{ name : "d2", size : 36, prefix : "d2"},{ name : "d4", size : 36, prefix : "d4"},{ name : "d6", size : 36, prefix : "d6"},{ name : "d8", size : 36, prefix : "d8"},{ name : "d10", size : 36, prefix : "d10"},{ name : "d12", size : 36, prefix : "d12"},{ name : "d20", size : 36, prefix : "d20"},{ name : "dots solid d6", size : 24, prefix : "solid-small-dot-d6"},{ name : "dots d6", size : 24, prefix : "small-dot-d6"}];
 doom_html_Attributes.properties = (function($this) {
 	var $r;
 	var _g = new haxe_ds_StringMap();

@@ -1,9 +1,10 @@
 @import "normalize"
 
-$bgpage = rgba(237, 239, 241, 1.0)
-$bgheader = #272935;
-$bgheaderlight = #B7B9C5;
-$texthighlight = rgba(255, 82, 82, 1.0);
+$bgpage = #edeff1
+$bgheader = #112966
+$bgheaderlight = #B7B9C5
+$white = #fee
+$texthighlight = #fe6
 
 body
   background-color: $bgpage
@@ -16,66 +17,45 @@ a
   text-decoration: none
 
 .header
+  .logo
+    i
+      display: inline-block
+      font-size: 72px
+      color: $texthighlight
+      transform: rotateZ(-20deg)
+      float: left
+      padding-right: 12px
+
   .top-header
-    min-height: 88px
+    padding: 8px 0 12px
     background-color: $bgheader
-    display: flex
-    justify-content: space-between
-    align-items: flex-end;
-    .left
-      flex-grow: 1
-      white-space: nowrap
-      min-width: 180px
     .center
-      text-align: center
-      align-self: flex-start
-      flex-grow: 2
-    .right
-      text-align: right
-      flex-grow: 1
-      white-space: nowrap
-      min-width: 180px
-  .bottom-header
-    background-color: $bgheaderlight
-    display: flex
-    justify-content: space-between
-    padding: 2px 6px
-    font-size: 13px
-    .left
-      text-align: left
-      width: 100px
-    .center
-      text-align: center
-      flex-grow: 2
-    .right
-      text-align: right
-      width: 100px
-
-.header
+      max-width: 770px
+      margin: 0 auto;
   a
-    color: #fff
+    color: $white
     text-decoration: none
-    .bottom
-      font-family: 'Bitter', serif
 
-  a
-    .top
+  .title
+    a
       color: $texthighlight
 
-  .prev
-  .next
-    line-height: 24px
+  .active
+    color: $bgheaderlight
 
-  .next
-    padding-right: 6px
-    padding-bottom: 6px
-  .prev
-    padding-left: 6px
-    padding-bottom: 6px
   .title
     padding: 12px 0 0 0
     font-size: 28px
     line-height: 30px;
+
+  .links
+
+    ul
+      padding: 0
+      margin: 0
+      li
+        display: inline-block
+        padding 0 0.25rem
 
 @media (max-width: 700px)
   .header
@@ -100,9 +80,15 @@ a
       color: #989AA8
       font-family: 'Bitter', serif
 
-  h1
+  h1, h2
     font-family: 'Bitter', serif
     font-weight: bold
+
+  h2
+    margin: 0 0 1rem
+    font-size: 1rem
+    color #666
+    border-bottom: 1px solid #ccc
 
 .idea-number-container
   margin-top: 40px
@@ -117,12 +103,6 @@ a
 
 .footer
   margin: 40px 0
-  ul
-    padding: 0
-    margin: 0
-    li
-      display: inline-block
-      padding 0 0.25rem
 
 .whoami
   border-top: 2px solid #DADCE0;
@@ -130,14 +110,40 @@ a
   margin-top: 98px
   color: #989AA8
 
-
-
-
-
-
 .glyphs
   display: flex
   flex-wrap: wrap
-
+  margin-top: 0.4rem
 .glyph
-  font-size: 36px
+  margin-bottom: 0.4rem
+  .symbol
+    text-align: center
+    min-width: 4.2rem
+  .bottom
+    font-size: 0.7rem
+    line-height: 0.7rem
+    padding 0.25rem 0.5rem 0
+    color #999
+  .icon
+    background: #fafafa
+    padding 4px
+    border-radius 4px
+    margin: 0 auto
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.05)
+  .icon:hover
+    background: #fff
+  .s36.icon
+    font-size: 36px
+    width: 36px
+    height 36px
+  .s24.icon
+    font-size: 24px
+    width: 24px
+    height 24px
+
+h3.notes
+  text-align: right
+  font-size: 0.7rem
+  margin: -2.4rem 0 0 0
+  font-weight: normal
+  color #555

@@ -10,11 +10,13 @@ class SiteContents {
   public var pages: Array<PageAbstract>;
   public var home: PageAbstract;
   public var glyphs: Array<Glyph>;
+  public var groups: Array<Group>;
   public function new(version: String, pages: Array<PageAbstract>, glyphs: Array<Glyph>) {
     this.version = version;
     this.home = pages.extract(function(p) return p.name == "home");
     this.pages = pages;
     this.glyphs = glyphs;
+    this.groups = Glyphs.group(glyphs);
   }
 
   public static function schema<E>(): Schema<E, SiteContents> return object(ap3(

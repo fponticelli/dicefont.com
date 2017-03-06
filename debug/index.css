@@ -215,74 +215,44 @@ a {
   color: #1565c0;
   text-decoration: none;
 }
-.header .top-header {
-  min-height: 88px;
-  background-color: #272935;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+.header .logo i {
+  display: inline-block;
+  font-size: 72px;
+  color: #fe6;
+  transform: rotateZ(-20deg);
+  float: left;
+  padding-right: 12px;
 }
-.header .top-header .left {
-  flex-grow: 1;
-  white-space: nowrap;
-  min-width: 180px;
+.header .top-header {
+  padding: 8px 0 12px;
+  background-color: #112966;
 }
 .header .top-header .center {
-  text-align: center;
-  align-self: flex-start;
-  flex-grow: 2;
-}
-.header .top-header .right {
-  text-align: right;
-  flex-grow: 1;
-  white-space: nowrap;
-  min-width: 180px;
-}
-.header .bottom-header {
-  background-color: #b7b9c5;
-  display: flex;
-  justify-content: space-between;
-  padding: 2px 6px;
-  font-size: 13px;
-}
-.header .bottom-header .left {
-  text-align: left;
-  width: 100px;
-}
-.header .bottom-header .center {
-  text-align: center;
-  flex-grow: 2;
-}
-.header .bottom-header .right {
-  text-align: right;
-  width: 100px;
+  max-width: 770px;
+  margin: 0 auto;
 }
 .header a {
-  color: #fff;
+  color: #fee;
   text-decoration: none;
 }
-.header a .bottom {
-  font-family: 'Bitter', serif;
+.header .title a {
+  color: #fe6;
 }
-.header a .top {
-  color: #ff5252;
-}
-.header .prev,
-.header .next {
-  line-height: 24px;
-}
-.header .next {
-  padding-right: 6px;
-  padding-bottom: 6px;
-}
-.header .prev {
-  padding-left: 6px;
-  padding-bottom: 6px;
+.header .active {
+  color: #b7b9c5;
 }
 .header .title {
   padding: 12px 0 0 0;
   font-size: 28px;
   line-height: 30px;
+}
+.header .links ul {
+  padding: 0;
+  margin: 0;
+}
+.header .links ul li {
+  display: inline-block;
+  padding: 0 0.25rem;
 }
 @media (max-width: 700px) {
   .header .top-header {
@@ -308,9 +278,16 @@ a {
   color: #989aa8;
   font-family: 'Bitter', serif;
 }
-.page h1 {
+.page h1,
+.page h2 {
   font-family: 'Bitter', serif;
   font-weight: bold;
+}
+.page h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #666;
+  border-bottom: 1px solid #ccc;
 }
 .idea-number-container {
   margin-top: 40px;
@@ -326,14 +303,6 @@ a {
 .footer {
   margin: 40px 0;
 }
-.footer ul {
-  padding: 0;
-  margin: 0;
-}
-.footer ul li {
-  display: inline-block;
-  padding: 0 0.25rem;
-}
 .whoami {
   border-top: 2px solid #dadce0;
   padding-top: 30px;
@@ -343,7 +312,45 @@ a {
 .glyphs {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 0.4rem;
 }
 .glyph {
+  margin-bottom: 0.4rem;
+}
+.glyph .symbol {
+  text-align: center;
+  min-width: 4.2rem;
+}
+.glyph .bottom {
+  font-size: 0.7rem;
+  line-height: 0.7rem;
+  padding: 0.25rem 0.5rem 0;
+  color: #999;
+}
+.glyph .icon {
+  background: #fafafa;
+  padding: 4px;
+  border-radius: 4px;
+  margin: 0 auto;
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.05);
+}
+.glyph .icon:hover {
+  background: #fff;
+}
+.glyph .s36.icon {
   font-size: 36px;
+  width: 36px;
+  height: 36px;
+}
+.glyph .s24.icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+h3.notes {
+  text-align: right;
+  font-size: 0.7rem;
+  margin: -2.4rem 0 0 0;
+  font-weight: normal;
+  color: #555;
 }

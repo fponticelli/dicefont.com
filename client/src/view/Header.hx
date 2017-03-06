@@ -13,8 +13,11 @@ class Header {
         div(
           ["class" => "top-header"],
           [
-            div(["class" => "center title"], a(["href" => "#/"], msg.header_title)),
-            div(["class" => "center links"], renderPages(contents.pages, page))
+            div(["class" => "center"], [
+              div(["class" => "logo"], a(["href" => "#/"], i(["class" => "df-d20-20"]))),
+              div(["class" => "title"], a(["href" => "#/"], msg.header_title)),
+              div(["class" => "links"], renderPages(contents.pages, page))
+            ])
           ]
         )
       ]
@@ -27,9 +30,9 @@ class Header {
       list.map(function(page) {
         return switch current {
           case Some(current) if(current.name == page.name):
-            renderCurrent(page);
+            li(renderCurrent(page));
           case _:
-            renderLink(page);
+            li(renderLink(page));
         }
       })
     );
@@ -39,5 +42,5 @@ class Header {
     return a(["href" => "#/" + page.name], page.name);
 
   static function renderCurrent(page: PageAbstract)
-    return span(page.name);
+    return span(["class" => "active"], page.name);
 }

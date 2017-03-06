@@ -8,10 +8,18 @@ import thx.schema.SimpleSchema.*;
 class Glyph {
   public var name(default, null): String;
   public var code(default, null): String;
+  public var face(default, null): Face;
 
+  static var numberPattern = ~/^\d+$/;
   public function new(name: String, code: String) {
     this.name = name;
     this.code = code;
+    var num = name.split("-").pop();
+    this.face = if(numberPattern.match(num)) {
+      Number(Std.parseInt(num));
+    } else {
+      Empty;
+    }
   }
 
   public function toString()
