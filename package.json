@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "stylus-watch": "stylus -w client/styl/index.styl -o debug",
-    "stylus": "stylus client/styl/index.styl -o debug",
+    "stylus-watch": "stylus -u nib -w client/styl/index.styl -o debug",
+    "stylus": "stylus -u nib client/styl/index.styl -o debug",
     "closure": "closure-compiler --js_output_file deploy/client.js debug/client.js",
     "minifycss": "minify --output deploy/index.css debug/index.css",
     "minifyhtml": "html-minifier --output deploy/index.html debug/index.html",
@@ -17,10 +17,12 @@
     "assets": "cp -r debug/assets deploy && cp debug/config.json deploy/config.json",
     "syncs3": "aws s3 sync deploy s3://dicefont.com --profile personal",
     "createconfig": "echo \"\\\"https://cdn.rawgit.com/fponticelli/dicefont/$(git ls-remote git@github.com:fponticelli/dicefont.git | head -1 | cut -f 1 | cut -c1-8)/dist/\\\"\" > debug/config.json",
-
     "build": "npm run haxe && npm run stylus && npm run closure && npm run minifycss && npm run minifyhtml && npm run createconfig && npm run assets",
     "deploy": "npm run build && npm run syncs3"
   },
   "author": "Franco Ponticelli",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "nib": "^1.1.2"
+  }
 }

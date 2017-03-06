@@ -5648,7 +5648,7 @@ view_App.render = function(state) {
 	} else {
 		_g3.h["class"] = value;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.main,state.contents.groups)]))]));
+	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.main,state.contents.groups)])),view_Footer.render()]));
 };
 view_App.renderMain = function(main,groups) {
 	switch(main[1]) {
@@ -5674,6 +5674,56 @@ view_App.renderMain = function(main,groups) {
 		}
 		break;
 	}
+};
+var view_Footer = function() { };
+view_Footer.__name__ = ["view","Footer"];
+view_Footer.render = function() {
+	var _g = new haxe_ds_StringMap();
+	var value = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("footer");
+	if(__map_reserved["class"] != null) {
+		_g.setReserved("class",value);
+	} else {
+		_g.h["class"] = value;
+	}
+	var _g1 = new haxe_ds_StringMap();
+	var value1 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("disclaimer");
+	if(__map_reserved["class"] != null) {
+		_g1.setReserved("class",value1);
+	} else {
+		_g1.h["class"] = value1;
+	}
+	var _g2 = new haxe_ds_StringMap();
+	var value2 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("https://github.com/fponticelli/dicefont.com");
+	if(__map_reserved["href"] != null) {
+		_g2.setReserved("href",value2);
+	} else {
+		_g2.h["href"] = value2;
+	}
+	var children = doom_core__$VNode_VNode_$Impl_$.el("a",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("website",null,null)]));
+	var _g3 = new haxe_ds_StringMap();
+	var value3 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("https://github.com/fponticelli/dicefont");
+	if(__map_reserved["href"] != null) {
+		_g3.setReserved("href",value3);
+	} else {
+		_g3.h["href"] = value3;
+	}
+	var children1 = doom_core__$VNode_VNode_$Impl_$.el("a",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("font",null,null)]));
+	var _g4 = new haxe_ds_StringMap();
+	var value4 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("https://twitter.com/fponticelli");
+	if(__map_reserved["href"] != null) {
+		_g4.setReserved("href",value4);
+	} else {
+		_g4.h["href"] = value4;
+	}
+	var children2 = doom_core__$VNode_VNode_$Impl_$.el("a",_g4,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("Franco Ponticelli",null,null)]));
+	var _g5 = new haxe_ds_StringMap();
+	var value5 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("https://github.com/fponticelli/doom");
+	if(__map_reserved["href"] != null) {
+		_g5.setReserved("href",value5);
+	} else {
+		_g5.h["href"] = value5;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([children,doom_core_VNodeImpl.Text(" and ",null,null),children1,doom_core_VNodeImpl.Text(" by ",null,null),children2,doom_core_VNodeImpl.Text(" using ",null,null),doom_core__$VNode_VNode_$Impl_$.el("a",_g5,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("doom",null,null)]))]))]));
 };
 var view_GlyphView = function() { };
 view_GlyphView.__name__ = ["view","GlyphView"];
@@ -5784,7 +5834,34 @@ view_Header.render = function(contents,page) {
 	} else {
 		_g8.h["class"] = value8;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([children,children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderPages(contents.pages,page)]))]))]))]));
+	var children2 = doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("div",_g2,doom_core__$VNodes_VNodes_$Impl_$.children([children,children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g8,doom_core__$VNodes_VNodes_$Impl_$.children([view_Header.renderPages(contents.pages,page)]))]))]));
+	var _g9 = new haxe_ds_StringMap();
+	var value9 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("github-ribbon");
+	if(__map_reserved["class"] != null) {
+		_g9.setReserved("class",value9);
+	} else {
+		_g9.h["class"] = value9;
+	}
+	var _g10 = new haxe_ds_StringMap();
+	var value10 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("github-ribbon__link");
+	if(__map_reserved["class"] != null) {
+		_g10.setReserved("class",value10);
+	} else {
+		_g10.h["class"] = value10;
+	}
+	var value11 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("https://github.com/fponticelli/dicefont");
+	if(__map_reserved["href"] != null) {
+		_g10.setReserved("href",value11);
+	} else {
+		_g10.h["href"] = value11;
+	}
+	var value12 = doom_core__$AttributeValue_AttributeValue_$Impl_$.fromString("Fork me on GitHub");
+	if(__map_reserved["title"] != null) {
+		_g10.setReserved("title",value12);
+	} else {
+		_g10.h["title"] = value12;
+	}
+	return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([children2,doom_core__$VNode_VNode_$Impl_$.el("div",_g9,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core__$VNode_VNode_$Impl_$.el("a",_g10,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("Fork me on GitHub",null,null)]))]))]));
 };
 view_Header.renderPages = function(list,current) {
 	var _g = new haxe_ds_StringMap();

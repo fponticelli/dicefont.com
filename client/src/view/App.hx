@@ -11,7 +11,8 @@ class App {
       Header.render(state.contents, switch state.main { case Page(page): Some(page); case _: None; }),
       div(["class" => "page"], [
         renderMain(state.main, state.contents.groups)
-      ])
+      ]),
+      Footer.render()
     ]);
   }
 

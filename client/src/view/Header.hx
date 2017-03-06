@@ -20,7 +20,16 @@ class Header {
               div(["class" => "links"], renderPages(contents.pages, page))
             ])
           ]
-        )
+        ),
+        div(["class" => "github-ribbon"], [
+          a([
+              "class" => "github-ribbon__link",
+              "href" => "https://github.com/fponticelli/dicefont",
+              "title" => "Fork me on GitHub"
+            ],
+            "Fork me on GitHub"
+          )
+        ])
       ]
     );
   }
