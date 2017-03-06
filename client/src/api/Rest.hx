@@ -11,10 +11,12 @@ using thx.schema.SimpleSchema;
 using thx.schema.SchemaDynamicExtensions;
 
 class Rest {
-  var base: Promise<Url>;
+  public var base(default, null): Promise<Url>;
+  var pages: Map<String, Promise<Page>>;
   public function new() {
     base = loadBase();
     base.success(function(url) trace("BASE", url));
+    pages = new Map();
   }
 
   function loadBase()
@@ -24,11 +26,14 @@ class Rest {
   public function getSiteContents(): Promise<SiteContents>
     return getContent("info", SiteContents.schema());
 
-  public function getPage(page: PageAbstract): Promise<Page>
-    return getText(page.filename)
-      .map(function(content) {
+  public function getPage(page: PageAbstract): Promise<Page> {
+    if(!pages.exists(page.name)) {
+      pages.set(page.name, getText(page.filename).map(function(content) {
         return new Page(page.name, page.filename, content);
-      });
+      }));
+    }
+    return pages.get(page.name);
+  }
 
   function getText(path: Path): Promise<String> {
     return base.flatMap(function(base) {
