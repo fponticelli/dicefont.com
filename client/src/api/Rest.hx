@@ -11,17 +11,18 @@ using thx.schema.SimpleSchema;
 using thx.schema.SchemaDynamicExtensions;
 
 class Rest {
-  public var base(default, null): Promise<Url>;
+  public var base(default, null): Url;
   var pages: Map<String, Promise<Page>>;
-  public function new() {
-    base = loadBase();
-    base.success(function(url) trace("BASE", url));
+  public function new(base: Url) {
     pages = new Map();
+    this.base = base;
+    // base.success(function(url) trace("BASE", url));
   }
 
-  function loadBase()
-    return Request.make(new RequestInfo(Get, "./config.json"), Json)
-             .body.map(Url.fromString);
+  public static function loadBase()
+    return Request
+              .make(new RequestInfo(Get, "./config.json"), Json)
+              .body.map(Url.fromString);
 
   public function getSiteContents(): Promise<SiteContents>
     return getContent("info", SiteContents.schema());
@@ -36,17 +37,13 @@ class Rest {
   }
 
   function getText(path: Path): Promise<String> {
-    return base.flatMap(function(base) {
-      var url = base / path.asRelative();
-      return Request.make(requestOne(url), Text).body;
-    });
+    var url = base / path.asRelative();
+    return Request.make(requestOne(url), Text).body;
   }
 
   function getContent<T>(path: Path, schema: Schema<String, T>): Promise<T> {
-    return base.flatMap(function(base) {
-      var url = base / path.asRelative() + ".json";
-      return getOne(url, schema);
-    });
+    var url = base / path.asRelative() + ".json";
+    return getOne(url, schema);
   }
 
   static function getOne<T>(url: Url, schema: Schema<String, T>): Promise<T>
@@ -54,7 +51,7 @@ class Rest {
       .body.flatMap(mapOneSchema(schema));
 
   static function requestOne(url: Url)
-    return new RequestInfo(Get,url);
+    return new RequestInfo(Get, url);
 
   static function mapOneSchema<T>(schema: Schema<String, T>): Dynamic -> Promise<T>
     return function(o: Dynamic): Promise<T> {

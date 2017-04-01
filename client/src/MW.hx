@@ -18,7 +18,6 @@ class MW {
     return empty() + loadContent + displayTitle + googleAnalytics();
   }
 
-
   public function displayTitle(state: State) {
     var title = switch state.main {
       case Loading: msg.tab_title_loading;

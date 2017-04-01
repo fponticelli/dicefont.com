@@ -1,13 +1,15 @@
 import thx.stream.Property;
 import thx.stream.Store;
+import thx.Url;
 import doom.html.Render;
 import api.*;
 
 class Client {
-  public static function onContents(contents: SiteContents, api: Rest) {
+  public static function onContents(contents: SiteContents, baseDistUrl: Url, api: Rest) {
     var state: State = {
       contents: contents,
-      main: Loading
+      main: Loading,
+      baseDistUrl: baseDistUrl
     };
 
     var prop = new Property(state);
@@ -34,16 +36,20 @@ class Client {
   }
 
   public static function main() {
-    var api = new api.Rest();
-    api.base.success(function(url) {
-      trace(url);
-      var link: js.html.LinkElement = cast js.Browser.document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = '$url/dicefont/dicefont.css';
-      js.Browser.document.head.appendChild(link);
-    });
-    api.getSiteContents()
-      .success(onContents.bind(_, api))
+    api.Rest.loadBase()
+      .success(function(base: Url) {
+        var api = new api.Rest(base);
+        trace(base);
+        var link: js.html.LinkElement = cast js.Browser.document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = '$base/dicefont/dicefont.css';
+        js.Browser.document.head.appendChild(link);
+        api.getSiteContents()
+          .success(onContents.bind(_, base, api))
+          .failure(function(e) {
+            trace("ERROR", e.toString());
+          });
+      })
       .failure(function(e) {
         trace("ERROR", e.toString());
       });

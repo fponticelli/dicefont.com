@@ -14,35 +14,38 @@ Action.PageLoaded = function(page) { var $x = ["PageLoaded",2,page]; $x.__enum__
 Action.NotifyError = function(err) { var $x = ["NotifyError",3,err]; $x.__enum__ = Action; $x.toString = $estr; return $x; };
 var Client = function() { };
 Client.__name__ = ["Client"];
-Client.onContents = function(contents,api) {
-	var state = { contents : contents, main : View.Loading};
+Client.onContents = function(contents,baseDistUrl,api) {
+	var state = { contents : contents, main : View.Loading, baseDistUrl : baseDistUrl};
 	var prop = new thx_stream_Property(state);
 	var middleware = new MW(api);
 	var store = new thx_stream_Store(prop,Reduce.reduce,middleware["use"]());
 	var render = new doom_html_Render();
 	render.stream(store.stream().map(view_App.render),dots_Query.find("#main"));
 	var tmp = Action.GoTo(window.location.hash);
-	store.dispatch(tmp,{ fileName : "Client.hx", lineNumber : 24, className : "Client", methodName : "onContents"});
+	store.dispatch(tmp,{ fileName : "Client.hx", lineNumber : 26, className : "Client", methodName : "onContents"});
 	window.onpopstate = function(e) {
 		var tmp1 = Action.GoTo(window.location.hash);
-		store.dispatch(tmp1,{ fileName : "Client.hx", lineNumber : 27, className : "Client", methodName : "onContents"});
+		store.dispatch(tmp1,{ fileName : "Client.hx", lineNumber : 29, className : "Client", methodName : "onContents"});
 	};
 };
 Client.main = function() {
-	var api1 = new api_Rest();
-	thx_promise__$Promise_Promise_$Impl_$.success(api1.base,function(url) {
-		haxe_Log.trace(thx__$Url_Url_$Impl_$.toString(url),{ fileName : "Client.hx", lineNumber : 39, className : "Client", methodName : "main"});
+	thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(api_Rest.loadBase(),function(base) {
+		var api1 = new api_Rest(base);
+		haxe_Log.trace(thx__$Url_Url_$Impl_$.toString(base),{ fileName : "Client.hx", lineNumber : 42, className : "Client", methodName : "main"});
 		var link = window.document.createElement("link");
 		link.rel = "stylesheet";
-		link.href = "" + thx__$Url_Url_$Impl_$.toString(url) + "/dicefont/dicefont.css";
+		link.href = "" + thx__$Url_Url_$Impl_$.toString(base) + "/dicefont/dicefont.css";
 		window.document.head.appendChild(link);
-	});
-	var a2 = api1;
-	var tmp = function(a1) {
-		Client.onContents(a1,a2);
-	};
-	thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(api1.getSiteContents(),tmp),function(e) {
-		haxe_Log.trace("ERROR",{ fileName : "Client.hx", lineNumber : 48, className : "Client", methodName : "main", customParams : [e.toString()]});
+		var a2 = base;
+		var a3 = api1;
+		var tmp = function(a1) {
+			Client.onContents(a1,a2,a3);
+		};
+		thx_promise__$Promise_Promise_$Impl_$.failure(thx_promise__$Promise_Promise_$Impl_$.success(api1.getSiteContents(),tmp),function(e) {
+			haxe_Log.trace("ERROR",{ fileName : "Client.hx", lineNumber : 50, className : "Client", methodName : "main", customParams : [e.toString()]});
+		});
+	}),function(e1) {
+		haxe_Log.trace("ERROR",{ fileName : "Client.hx", lineNumber : 54, className : "Client", methodName : "main", customParams : [e1.toString()]});
 	});
 };
 var EReg = function(r,opt) {
@@ -228,11 +231,11 @@ MW.prototype = {
 				switch(_g[1]) {
 				case 0:
 					var page1 = _g[2];
-					haxe_Log.trace("FOUND",{ fileName : "MW.hx", lineNumber : 48, className : "MW", methodName : "loadContent", customParams : [page1]});
+					haxe_Log.trace("FOUND",{ fileName : "MW.hx", lineNumber : 47, className : "MW", methodName : "loadContent", customParams : [page1]});
 					dispatch(Action.LoadPage(page1));
 					break;
 				case 1:
-					haxe_Log.trace("NOT FOUND",{ fileName : "MW.hx", lineNumber : 51, className : "MW", methodName : "loadContent", customParams : [url]});
+					haxe_Log.trace("NOT FOUND",{ fileName : "MW.hx", lineNumber : 50, className : "MW", methodName : "loadContent", customParams : [url]});
 					dispatch(Action.NotifyError(ErrorKind.ContentNotFound(url)));
 					break;
 				}
@@ -247,7 +250,7 @@ MW.prototype = {
 				dispatch(Action.PageLoaded(_));
 				return;
 			}),function(err) {
-				haxe_Log.trace(err,{ fileName : "MW.hx", lineNumber : 59, className : "MW", methodName : "loadContent"});
+				haxe_Log.trace(err,{ fileName : "MW.hx", lineNumber : 58, className : "MW", methodName : "loadContent"});
 				var tmp = Action.NotifyError(ErrorKind.ContentNotFound(page2.filename.toString()));
 				dispatch(tmp);
 			});
@@ -388,11 +391,11 @@ Reduce.reduce = function(state,action) {
 	case 2:
 		var page = action[2];
 		var o = state;
-		return { contents : o.contents, main : View.Page(page)};
+		return { baseDistUrl : o.baseDistUrl, contents : o.contents, main : View.Page(page)};
 	case 3:
 		var err = action[2];
 		var o1 = state;
-		return { contents : o1.contents, main : View.Error(err)};
+		return { baseDistUrl : o1.baseDistUrl, contents : o1.contents, main : View.Error(err)};
 	}
 };
 var Reflect = function() { };
@@ -784,14 +787,14 @@ api_PageAbstract.prototype = {
 	}
 	,__class__: api_PageAbstract
 };
-var api_Rest = function() {
-	this.base = this.loadBase();
-	thx_promise__$Promise_Promise_$Impl_$.success(this.base,function(url) {
-		haxe_Log.trace("BASE",{ fileName : "Rest.hx", lineNumber : 18, className : "api.Rest", methodName : "new", customParams : [thx__$Url_Url_$Impl_$.toString(url)]});
-	});
+var api_Rest = function(base) {
 	this.pages = new haxe_ds_StringMap();
+	this.base = base;
 };
 api_Rest.__name__ = ["api","Rest"];
+api_Rest.loadBase = function() {
+	return thx_promise__$Promise_Promise_$Impl_$.map(thx_http_Request.make(new thx_http_RequestInfo("GET",thx__$Url_Url_$Impl_$.fromString("./config.json")),thx_http_ResponseType.Json).get_body(),thx__$Url_Url_$Impl_$.fromString);
+};
 api_Rest.getOne = function(url,schema) {
 	return thx_promise__$Promise_Promise_$Impl_$.flatMapEither(thx_http_Request.make(api_Rest.requestOne(url),thx_http_ResponseType.Json).get_body(),api_Rest.mapOneSchema(schema),function(err) {
 		return thx_promise__$Promise_Promise_$Impl_$.error(err);
@@ -808,7 +811,7 @@ api_Rest.mapOneSchema = function(schema) {
 			var e = _g[2];
 			return thx_promise__$Promise_Promise_$Impl_$.fail(thx__$Nel_Nel_$Impl_$.toArray(e).map(function(_) {
 				return _.toString();
-			}).join("\n"),{ fileName : "Rest.hx", lineNumber : 63, className : "api.Rest", methodName : "mapOneSchema"});
+			}).join("\n"),{ fileName : "Rest.hx", lineNumber : 60, className : "api.Rest", methodName : "mapOneSchema"});
 		case 1:
 			var v = _g[2];
 			return thx_promise__$Promise_Promise_$Impl_$.value(v);
@@ -816,10 +819,7 @@ api_Rest.mapOneSchema = function(schema) {
 	};
 };
 api_Rest.prototype = {
-	loadBase: function() {
-		return thx_promise__$Promise_Promise_$Impl_$.map(thx_http_Request.make(new thx_http_RequestInfo("GET",thx__$Url_Url_$Impl_$.fromString("./config.json")),thx_http_ResponseType.Json).get_body(),thx__$Url_Url_$Impl_$.fromString);
-	}
-	,getSiteContents: function() {
+	getSiteContents: function() {
 		return this.getContent(thx__$Path_Path_$Impl_$.fromString("info"),api_SiteContents.schema());
 	}
 	,getPage: function(page) {
@@ -847,24 +847,18 @@ api_Rest.prototype = {
 		}
 	}
 	,getText: function(path) {
-		return thx_promise__$Promise_Promise_$Impl_$.flatMapEither(this.base,function(base) {
-			var path1 = path.slice(2);
-			var this1 = [path[0],""].concat(thx__$Path_Path_$Impl_$.resolve(path1,false));
-			var url = thx__$Url_Url_$Impl_$.concatString(base,thx__$Path_Path_$Impl_$.toString(this1));
-			return thx_http_Request.make(api_Rest.requestOne(url),thx_http_ResponseType.Text).get_body();
-		},function(err) {
-			return thx_promise__$Promise_Promise_$Impl_$.error(err);
-		});
+		var url = this.base;
+		var path1 = path.slice(2);
+		var this1 = [path[0],""].concat(thx__$Path_Path_$Impl_$.resolve(path1,false));
+		var url1 = thx__$Url_Url_$Impl_$.concatString(url,thx__$Path_Path_$Impl_$.toString(this1));
+		return thx_http_Request.make(api_Rest.requestOne(url1),thx_http_ResponseType.Text).get_body();
 	}
 	,getContent: function(path,schema) {
-		return thx_promise__$Promise_Promise_$Impl_$.flatMapEither(this.base,function(base) {
-			var path1 = path.slice(2);
-			var this1 = [path[0],""].concat(thx__$Path_Path_$Impl_$.resolve(path1,false));
-			var url = thx__$Url_Url_$Impl_$.toString(thx__$Url_Url_$Impl_$.concatString(base,thx__$Path_Path_$Impl_$.toString(this1))) + ".json";
-			return api_Rest.getOne(thx__$Url_Url_$Impl_$.fromString(url),schema);
-		},function(err) {
-			return thx_promise__$Promise_Promise_$Impl_$.error(err);
-		});
+		var url = this.base;
+		var path1 = path.slice(2);
+		var this1 = [path[0],""].concat(thx__$Path_Path_$Impl_$.resolve(path1,false));
+		var url1 = thx__$Url_Url_$Impl_$.toString(thx__$Url_Url_$Impl_$.concatString(url,thx__$Path_Path_$Impl_$.toString(this1))) + ".json";
+		return api_Rest.getOne(thx__$Url_Url_$Impl_$.fromString(url1),schema);
 	}
 	,__class__: api_Rest
 };
@@ -4488,14 +4482,21 @@ thx_fp_Dynamics.parseArrayIndexed = function(v,f,err) {
 	}
 };
 thx_fp_Dynamics.parseStringMap = function(v,f,err) {
+	var tmp;
 	if(Reflect.isObject(v)) {
+		var o = v;
+		tmp = null == (o == null ? null : js_Boot.getClass(o));
+	} else {
+		tmp = false;
+	}
+	if(tmp) {
 		return thx__$Validation_Validation_$Impl_$.map(thx_Arrays.traverseValidation(Reflect.fields(v),function(field) {
-			var tmp = Reflect.getProperty(v,field);
+			var tmp1 = Reflect.getProperty(v,field);
 			var _0 = field;
-			var tmp1 = function(_1) {
+			var tmp2 = function(_1) {
 				return thx__$Tuple_Tuple2_$Impl_$.of(_0,_1);
 			};
-			return thx__$Validation_Validation_$Impl_$.map(f(tmp,field),tmp1);
+			return thx__$Validation_Validation_$Impl_$.map(f(tmp1,field),tmp2);
 		},thx__$Nel_Nel_$Impl_$.semigroup()),thx_Arrays.toStringMap);
 	} else {
 		return thx_Either.Left(thx__$Nel_Nel_$Impl_$.pure(err("" + Std.string(v) + " is not object-valued (type resolved to " + Std.string(Type["typeof"](v)) + ")")));
@@ -5648,9 +5649,9 @@ view_App.render = function(state) {
 	} else {
 		_g3.h["class"] = value;
 	}
-	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.main,state.contents.groups)])),view_Footer.render()]));
+	return doom_core__$VNode_VNode_$Impl_$.el("div",null,doom_core__$VNodes_VNodes_$Impl_$.children([children1,doom_core__$VNode_VNode_$Impl_$.el("div",_g3,doom_core__$VNodes_VNodes_$Impl_$.children([view_App.renderMain(state.baseDistUrl,state.main,state.contents.groups)])),view_Footer.render()]));
 };
-view_App.renderMain = function(main,groups) {
+view_App.renderMain = function(baseDistUrl,main,groups) {
 	switch(main[1]) {
 	case 0:
 		var _g = new haxe_ds_StringMap();
@@ -5663,7 +5664,7 @@ view_App.renderMain = function(main,groups) {
 		return doom_core__$VNode_VNode_$Impl_$.el("div",_g,doom_core__$VNodes_VNodes_$Impl_$.children([doom_core_VNodeImpl.Text("...",null,null)]));
 	case 1:
 		var data = main[2];
-		return view_PageView.render(data,groups);
+		return view_PageView.render(baseDistUrl,data,groups);
 	case 2:
 		switch(main[2][1]) {
 		case 0:
@@ -5915,8 +5916,8 @@ view_Header.renderCurrent = function(page) {
 };
 var view_PageView = function() { };
 view_PageView.__name__ = ["view","PageView"];
-view_PageView.render = function(page,groups) {
-	var contents = [doom_core_VNodeImpl.Raw(Markdown.markdownToHtml(page.content),null,null)];
+view_PageView.render = function(baseDistUrl,page,groups) {
+	var contents = [doom_core_VNodeImpl.Raw(view_PageView.markdown(baseDistUrl,page.content),null,null)];
 	if(page.name == "home") {
 		contents.push(view_PageView.renderGroups(groups));
 	}
@@ -5981,6 +5982,10 @@ view_PageView.renderGlyphs = function(glyphs,size) {
 		}
 		return doom_core__$VNode_VNode_$Impl_$.el("div",_g1,doom_core__$VNodes_VNodes_$Impl_$.children([view_GlyphView.render(g,size)]));
 	})));
+};
+view_PageView.markdown = function(baseDistUrl,s) {
+	s = StringTools.replace(s,"${cdndist}",thx__$Url_Url_$Impl_$.toString(baseDistUrl));
+	return Markdown.markdownToHtml(s);
 };
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
 var $_, $fid = 0;
@@ -6066,202 +6071,210 @@ doom_html_Attributes.properties = (function($this) {
 	}
 	{
 		var value7 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["controls"] != null) {
-			_g.setReserved("controls",value7);
+		if(__map_reserved["contentEditable"] != null) {
+			_g.setReserved("contentEditable",value7);
 		} else {
-			_g.h["controls"] = value7;
+			_g.h["contentEditable"] = value7;
 		}
 	}
 	{
 		var value8 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["default"] != null) {
-			_g.setReserved("default",value8);
+		if(__map_reserved["controls"] != null) {
+			_g.setReserved("controls",value8);
 		} else {
-			_g.h["default"] = value8;
+			_g.h["controls"] = value8;
 		}
 	}
 	{
 		var value9 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["defer"] != null) {
-			_g.setReserved("defer",value9);
+		if(__map_reserved["default"] != null) {
+			_g.setReserved("default",value9);
 		} else {
-			_g.h["defer"] = value9;
+			_g.h["default"] = value9;
 		}
 	}
 	{
 		var value10 = doom_html_AttributeType.BooleanAttribute;
+		if(__map_reserved["defer"] != null) {
+			_g.setReserved("defer",value10);
+		} else {
+			_g.h["defer"] = value10;
+		}
+	}
+	{
+		var value11 = doom_html_AttributeType.BooleanAttribute;
 		if(__map_reserved["disabled"] != null) {
-			_g.setReserved("disabled",value10);
+			_g.setReserved("disabled",value11);
 		} else {
-			_g.h["disabled"] = value10;
+			_g.h["disabled"] = value11;
 		}
 	}
 	{
-		var value11 = doom_html_AttributeType.OverloadedBooleanAttribute;
+		var value12 = doom_html_AttributeType.OverloadedBooleanAttribute;
 		if(__map_reserved["download"] != null) {
-			_g.setReserved("download",value11);
+			_g.setReserved("download",value12);
 		} else {
-			_g.h["download"] = value11;
-		}
-	}
-	{
-		var value12 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["formNoValidate"] != null) {
-			_g.setReserved("formNoValidate",value12);
-		} else {
-			_g.h["formNoValidate"] = value12;
+			_g.h["download"] = value12;
 		}
 	}
 	{
 		var value13 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["hidden"] != null) {
-			_g.setReserved("hidden",value13);
+		if(__map_reserved["formNoValidate"] != null) {
+			_g.setReserved("formNoValidate",value13);
 		} else {
-			_g.h["hidden"] = value13;
+			_g.h["formNoValidate"] = value13;
 		}
 	}
 	{
 		var value14 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["loop"] != null) {
-			_g.setReserved("loop",value14);
+		if(__map_reserved["hidden"] != null) {
+			_g.setReserved("hidden",value14);
 		} else {
-			_g.h["loop"] = value14;
+			_g.h["hidden"] = value14;
 		}
 	}
 	{
-		var value15 = doom_html_AttributeType.BooleanProperty;
-		if(__map_reserved["multiple"] != null) {
-			_g.setReserved("multiple",value15);
+		var value15 = doom_html_AttributeType.BooleanAttribute;
+		if(__map_reserved["loop"] != null) {
+			_g.setReserved("loop",value15);
 		} else {
-			_g.h["multiple"] = value15;
+			_g.h["loop"] = value15;
 		}
 	}
 	{
 		var value16 = doom_html_AttributeType.BooleanProperty;
-		if(__map_reserved["muted"] != null) {
-			_g.setReserved("muted",value16);
+		if(__map_reserved["multiple"] != null) {
+			_g.setReserved("multiple",value16);
 		} else {
-			_g.h["muted"] = value16;
+			_g.h["multiple"] = value16;
 		}
 	}
 	{
-		var value17 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["noValidate"] != null) {
-			_g.setReserved("noValidate",value17);
+		var value17 = doom_html_AttributeType.BooleanProperty;
+		if(__map_reserved["muted"] != null) {
+			_g.setReserved("muted",value17);
 		} else {
-			_g.h["noValidate"] = value17;
+			_g.h["muted"] = value17;
 		}
 	}
 	{
 		var value18 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["open"] != null) {
-			_g.setReserved("open",value18);
+		if(__map_reserved["noValidate"] != null) {
+			_g.setReserved("noValidate",value18);
 		} else {
-			_g.h["open"] = value18;
+			_g.h["noValidate"] = value18;
 		}
 	}
 	{
 		var value19 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["readOnly"] != null) {
-			_g.setReserved("readOnly",value19);
+		if(__map_reserved["open"] != null) {
+			_g.setReserved("open",value19);
 		} else {
-			_g.h["readOnly"] = value19;
+			_g.h["open"] = value19;
 		}
 	}
 	{
 		var value20 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["required"] != null) {
-			_g.setReserved("required",value20);
+		if(__map_reserved["readOnly"] != null) {
+			_g.setReserved("readOnly",value20);
 		} else {
-			_g.h["required"] = value20;
+			_g.h["readOnly"] = value20;
 		}
 	}
 	{
 		var value21 = doom_html_AttributeType.BooleanAttribute;
+		if(__map_reserved["required"] != null) {
+			_g.setReserved("required",value21);
+		} else {
+			_g.h["required"] = value21;
+		}
+	}
+	{
+		var value22 = doom_html_AttributeType.BooleanAttribute;
 		if(__map_reserved["reversed"] != null) {
-			_g.setReserved("reversed",value21);
+			_g.setReserved("reversed",value22);
 		} else {
-			_g.h["reversed"] = value21;
+			_g.h["reversed"] = value22;
 		}
 	}
 	{
-		var value22 = doom_html_AttributeType.PositiveNumericAttribute;
+		var value23 = doom_html_AttributeType.PositiveNumericAttribute;
 		if(__map_reserved["rows"] != null) {
-			_g.setReserved("rows",value22);
+			_g.setReserved("rows",value23);
 		} else {
-			_g.h["rows"] = value22;
+			_g.h["rows"] = value23;
 		}
 	}
 	{
-		var value23 = doom_html_AttributeType.NumericAttribute;
+		var value24 = doom_html_AttributeType.NumericAttribute;
 		if(__map_reserved["rowSpan"] != null) {
-			_g.setReserved("rowSpan",value23);
+			_g.setReserved("rowSpan",value24);
 		} else {
-			_g.h["rowSpan"] = value23;
-		}
-	}
-	{
-		var value24 = doom_html_AttributeType.BooleanAttribute;
-		if(__map_reserved["scoped"] != null) {
-			_g.setReserved("scoped",value24);
-		} else {
-			_g.h["scoped"] = value24;
+			_g.h["rowSpan"] = value24;
 		}
 	}
 	{
 		var value25 = doom_html_AttributeType.BooleanAttribute;
+		if(__map_reserved["scoped"] != null) {
+			_g.setReserved("scoped",value25);
+		} else {
+			_g.h["scoped"] = value25;
+		}
+	}
+	{
+		var value26 = doom_html_AttributeType.BooleanAttribute;
 		if(__map_reserved["seamless"] != null) {
-			_g.setReserved("seamless",value25);
+			_g.setReserved("seamless",value26);
 		} else {
-			_g.h["seamless"] = value25;
+			_g.h["seamless"] = value26;
 		}
 	}
 	{
-		var value26 = doom_html_AttributeType.BooleanProperty;
+		var value27 = doom_html_AttributeType.BooleanProperty;
 		if(__map_reserved["selected"] != null) {
-			_g.setReserved("selected",value26);
+			_g.setReserved("selected",value27);
 		} else {
-			_g.h["selected"] = value26;
-		}
-	}
-	{
-		var value27 = doom_html_AttributeType.PositiveNumericAttribute;
-		if(__map_reserved["size"] != null) {
-			_g.setReserved("size",value27);
-		} else {
-			_g.h["size"] = value27;
+			_g.h["selected"] = value27;
 		}
 	}
 	{
 		var value28 = doom_html_AttributeType.PositiveNumericAttribute;
+		if(__map_reserved["size"] != null) {
+			_g.setReserved("size",value28);
+		} else {
+			_g.h["size"] = value28;
+		}
+	}
+	{
+		var value29 = doom_html_AttributeType.PositiveNumericAttribute;
 		if(__map_reserved["span"] != null) {
-			_g.setReserved("span",value28);
+			_g.setReserved("span",value29);
 		} else {
-			_g.h["span"] = value28;
+			_g.h["span"] = value29;
 		}
 	}
 	{
-		var value29 = doom_html_AttributeType.NumericAttribute;
+		var value30 = doom_html_AttributeType.NumericAttribute;
 		if(__map_reserved["start"] != null) {
-			_g.setReserved("start",value29);
+			_g.setReserved("start",value30);
 		} else {
-			_g.h["start"] = value29;
+			_g.h["start"] = value30;
 		}
 	}
 	{
-		var value30 = doom_html_AttributeType.SideEffectProperty;
+		var value31 = doom_html_AttributeType.SideEffectProperty;
 		if(__map_reserved["value"] != null) {
-			_g.setReserved("value",value30);
+			_g.setReserved("value",value31);
 		} else {
-			_g.h["value"] = value30;
+			_g.h["value"] = value31;
 		}
 	}
 	{
-		var value31 = doom_html_AttributeType.BooleanAttribute;
+		var value32 = doom_html_AttributeType.BooleanAttribute;
 		if(__map_reserved["itemScope"] != null) {
-			_g.setReserved("itemScope",value31);
+			_g.setReserved("itemScope",value32);
 		} else {
-			_g.h["itemScope"] = value31;
+			_g.h["itemScope"] = value32;
 		}
 	}
 	$r = _g;

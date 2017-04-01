@@ -3,10 +3,12 @@ package view;
 import api.*;
 import doom.html.Html.*;
 import Markdown.*;
+using thx.Strings;
+using thx.Url;
 
 class PageView {
-  public static function render(page: Page, groups: Array<Group>) {
-    var contents = [raw(markdownToHtml(page.content))];
+  public static function render(baseDistUrl: Url, page: Page, groups: Array<Group>) {
+    var contents = [raw(markdown(baseDistUrl, page.content))];
 
     if(page.name == "home") {
       contents.push(renderGroups(groups));
@@ -36,5 +38,10 @@ class PageView {
     return div(["class" => "glyphs"], glyphs.map(function(g) {
       return div(["class" => 'glyph'], GlyphView.render(g, size));
     }));
+  }
+
+  public static function markdown(baseDistUrl: Url, s: String) {
+    s = s.replace("${cdndist}", baseDistUrl.toString());
+    return markdownToHtml(s);
   }
 }

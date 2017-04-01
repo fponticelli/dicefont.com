@@ -1,8 +1,10 @@
 import api.*;
+import thx.Url;
 
 typedef State = {
   contents: SiteContents,
-  main: View
+  main: View,
+  baseDistUrl: Url
 }
 
 enum View {
