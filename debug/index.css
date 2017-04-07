@@ -592,12 +592,12 @@ a {
 }
 .glyph .symbol {
   text-align: center;
-  min-width: 4.8rem;
+  min-width: 4.4rem;
 }
 .glyph .bottom {
   font-size: 0.7rem;
   line-height: 0.7rem;
-  padding: 0.25rem 0.5rem 0;
+  padding: 0.25rem 0.25rem 0;
   color: #999;
 }
 .glyph .icon {
